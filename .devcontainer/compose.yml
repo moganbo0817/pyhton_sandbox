@@ -1,10 +1,10 @@
 services:
   python:
-    image: ex21/python:1.0
+    image: python
     build: ./python
-    container_name: 'python_sandbox'
+    container_name: "python_sandbox"
     stdin_open: true
     tty: true
-    working_dir: '/tmp/work'
+    working_dir: "/tmp/work"
     volumes:
       - ../python:/tmp/work
