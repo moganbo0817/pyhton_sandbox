@@ -41,7 +41,7 @@ def createModel(df):
     plt.savefig(parent.joinpath('models/iris.png'))
     return model
 
-modelPath = parent.joinpath('models/irismodel.pkl')
+modelPath = parent.joinpath('models/ayame.pkl')
 
 # モデルがないなら作成
 if os.path.exists(modelPath) == False:
