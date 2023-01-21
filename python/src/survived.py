@@ -73,6 +73,9 @@ def learn(x,t,depth=3):
 #     print(total_senetence.format(j,train_score,test_score))
 
 train_score,test_score,model = learn(x,t,depth=5)
+modelFrame = pd.DataFrame(model.feature_importances_,index=x.columns)
+print(modelFrame.head(10))
+
 modelPath = parent.joinpath('models/survived.pkl')
 
 with open(modelPath,'wb') as f:
