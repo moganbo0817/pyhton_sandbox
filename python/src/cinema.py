@@ -36,12 +36,12 @@ def createModel(df):
 
     # 線形重回帰
     model = LinearRegression()
-    model.fit(x_train,y_train)
+    model.fit(x_train, y_train)
     tmp = pd.DataFrame(model.coef_)
     tmp.index = x_train.columns
     print(tmp)
-    #score = model.score(x_test,y_test)
-    #print(score)
+    # score = model.score(x_test,y_test)
+    # print(score)
 
     pred = model.predict(x_test)
     # 絶対誤差
@@ -57,15 +57,15 @@ num = int(input('modelを新規作成する場合は1を入力>>'))
 if num == 1:
     df = createDf()
     model = createModel(df)
-    with open(modelPath,'wb') as f:
-            pickle.dump(model,f)
+    with open(modelPath, 'wb') as f:
+        pickle.dump(model, f)
 
 # モデル読み込み
-with open(modelPath,'rb') as f:
+with open(modelPath, 'rb') as f:
     model = pickle.load(f)
 
-x =list(map(int,input('a b c d>>').split()))
-#new = [[150,700,300,0]]
+x = list(map(int, input('a b c d>>').split()))
+# new = [[150,700,300,0]]
 new = [x]
 pre = model.predict(new)
 print(pre)
