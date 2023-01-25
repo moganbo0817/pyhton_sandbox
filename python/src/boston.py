@@ -93,5 +93,10 @@ def learn(x, t):
 x = train_val.loc[:, ['RM', 'LSTAT', 'PTRATIO']]
 t = train_val[['PRICE']]
 
+x['RM2'] = x['RM']**2
+x['LSTAT2'] = x['LSTAT']**2
+x['PTRATIO2'] = x['PTRATIO']**2
+
 s1, s2 = learn(x, t)
+
 print(s1, s2)
