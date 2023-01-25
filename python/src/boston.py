@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from pathlib import Path
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
+import pickle
 
 parent = Path(__file__).resolve().parent
 df = pd.read_csv(parent.joinpath('data/Boston.csv'))
@@ -97,6 +98,39 @@ x['RM2'] = x['RM']**2
 x['LSTAT2'] = x['LSTAT']**2
 x['PTRATIO2'] = x['PTRATIO']**2
 
-s1, s2 = learn(x, t)
+x['RM*LSTAT'] = x['RM']*x['LSTAT']
+# print(x.head(2))
 
-print(s1, s2)
+# s1, s2 = learn(x, t)
+# print(s1, s2)
+
+sc_model_x = StandardScaler()
+sc_model_x.fit(x)
+sc_x = sc_model_x.transform(x)
+
+sc_model_y = StandardScaler()
+sc_model_y.fit(t)
+sc_y = sc_model_y.transform(t)
+
+model = LinearRegression()
+model.fit(sc_x, sc_y)
+
+# テストデータ加工
+test = test.fillna(train_val.mean())
+x_test = test[col]
+y_test = test[['PRICE']]
+
+x_test['RM2'] = x_test['RM']**2
+x_test['LSTAT2'] = x_test['LSTAT']**2
+x_test['PTRATIO2'] = x_test['PTRATIO']**2
+
+x_test['RM*LSTAT'] = x_test['RM']*x_test['LSTAT']
+
+sc_x_test = sc_model_x.transform(x_test)
+sc_y_test = sc_model_y.transform(y_test)
+
+print(model.score(sc_x_test, sc_y_test))
+
+modelPath = parent.joinpath('models/boston.pkl')
+with open(modelPath, 'wb')as f:
+    pickle.dump(model, f)
