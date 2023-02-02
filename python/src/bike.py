@@ -2,6 +2,7 @@ import pandas as pd
 from pathlib import Path
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from sklearn.covariance import MinCovDet
 
 parent = Path(__file__).resolve().parent
 df = pd.read_csv(parent.joinpath('data/bike.tsv'), sep='\t')
@@ -38,17 +39,38 @@ df2['atemp'] = df2['atemp'].interpolate()
 df2['atemp'].loc[220:240].plot(kind='line')
 #plt.savefig(parent.joinpath('models/bike_atemp.png'))
 
-iris_df = pd.read_csv(parent.joinpath('data/iris.csv'))
-non_df = iris_df.dropna()
-x = non_df.loc[:,'がく片幅':'花弁幅']
-t = non_df['がく片長さ']
-model = LinearRegression()
-model.fit(x,t)
+# iris_df = pd.read_csv(parent.joinpath('data/iris.csv'))
+# non_df = iris_df.dropna()
+# x = non_df.loc[:,'がく片幅':'花弁幅']
+# t = non_df['がく片長さ']
+# model = LinearRegression()
+# model.fit(x,t)
 
-condition = iris_df['がく片長さ'].isnull()
-non_data = iris_df.loc[condition]
+# condition = iris_df['がく片長さ'].isnull()
+# non_data = iris_df.loc[condition]
 
-x = non_data.locc[:,'がく片幅':'花弁幅']
-pred = model.predict(x)
+# x = non_data.locc[:,'がく片幅':'花弁幅']
+# pred = model.predict(x)
 
-iris_df.loc[condition,'がく片長さ'] = pred
+# iris_df.loc[condition,'がく片長さ'] = pred
+#print(df2)
+df4 = df2.loc[:,'atemp':'windspeed']
+#print(df4)
+df4 = df4.dropna()
+mcd = MinCovDet(random_state=0,support_fraction=0.7)
+mcd.fit(df4)
+distance = mcd.mahalanobis(df4)
+#print(distance)
+
+distance = pd.Series(distance)
+distance.plot(kind='box')
+#plt.savefig(parent.joinpath('models/bike_hige.png'))
+tmp = distance.describe()
+#print(tmp)
+
+iqr = tmp['75%'] - tmp['25%']
+jougen = 1.5 * (iqr) + tmp['75%']
+kagen = tmp['25%'] - 1.5*(iqr)
+
+outliner = distance[(distance>jougen) | (distance <kagen)]
+print(outliner)
