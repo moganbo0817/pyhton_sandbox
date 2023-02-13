@@ -23,8 +23,24 @@ model = LogisticRegression(random_state=0,C=0.1,multi_class='auto',solver='lbfgs
 model.fit(x_train,y_train)
 score1 = model.score(x_train,y_train)
 score2 = model.score(x_val,y_val)
-print(score1,score2)
-print(model.coef_)
+#print(score1,score2)
+#print(model.coef_)
 
 x_new = [[1,2,3,4]]
-print(model.predict_proba(x_new))
+#print(model.predict_proba(x_new))
+
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from pathlib import Path
+
+x_train,x_test,y_train,y_test = train_test_split(x,t,test_size=0.2,random_state=0)
+
+base_model = DecisionTreeClassifier(random_state=0,max_depth=5)
+
+model = AdaBoostClassifier(n_estimators=500,random_state=0,base_estimator=base_model)
+model.fit(x_train,y_train)
+
+score1 = model.score(x_train,y_train)
+score2 = model.score(x_test,y_test)
+
+print(score1,score2)
