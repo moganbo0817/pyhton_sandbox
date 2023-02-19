@@ -51,3 +51,33 @@ new_df.columns = col
 # new_df.plot(kind='scatter',x='City',y='Exclusive residential')
 # plt.savefig(parent.joinpath('models/pca.png'))
 
+model = PCA(whiten=True)
+# 学習と新規データのあてはめ
+tmp = model.fit_transform(sc_df)
+# print(tmp.shape)
+ratio = model.explained_variance_ratio_
+array = []
+
+for i in range(len(ratio)):
+    #累積寄与の計算
+    ruiseki = sum(ratio[0:(i+1)])
+    array.append(ruiseki)
+
+pd.Series(array).plot(kind='line')
+# plt.savefig(parent.joinpath('models/pcaruiseki.png'))
+
+thred = 0.8
+
+for i in range(len(array)):
+    if array[i] >= thred:
+        print(i+1)
+        break
+
+
+model = PCA(n_components=6,whiten=True)
+model.fit(sc_df)
+new = model.transform(sc_df)
+
+col = ['PC1','PC2','PC3','PC4','PC5','PC6']
+new_df2 = pd.DataFrame(new,columns=col)
+new_df2.to_csv(parent.joinpath('data/boston_pca.csv'),index=False)
