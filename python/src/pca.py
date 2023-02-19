@@ -2,6 +2,7 @@ import pandas as pd
 from pathlib import Path
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 parent = Path(__file__).resolve().parent
 
@@ -33,4 +34,20 @@ model.fit(sc_df)
 
 new = model.transform(sc_df)
 new_df = pd.DataFrame(new)
-print(new_df.head())
+# print(new_df.head())
+
+new_df.columns = ['PC1','PC2']
+df5 = pd.DataFrame(sc_df,columns=df4.columns)
+df6 = pd.concat([df5,new_df],axis=1)
+
+# 相関係数の計算
+df_corr = df6.corr()
+# print(df_corr.loc[:'very_low','PC1':]['PC1'].sort_values(ascending=False))
+# print(df_corr.loc[:'very_low','PC1':]['PC2'].sort_values(ascending=False))
+
+col = ['City','Exclusive residential']
+new_df.columns = col
+
+# new_df.plot(kind='scatter',x='City',y='Exclusive residential')
+# plt.savefig(parent.joinpath('models/pca.png'))
+
