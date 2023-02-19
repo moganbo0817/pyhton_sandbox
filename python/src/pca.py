@@ -1,6 +1,7 @@
 import pandas as pd
 from pathlib import Path
 from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 parent = Path(__file__).resolve().parent
 
@@ -22,3 +23,14 @@ df4 = df3.astype('float')
 # 標準化
 sc = StandardScaler()
 sc_df = sc.fit_transform(df4)
+
+model = PCA(n_components=2, whiten=True)
+model.fit(sc_df)
+
+# print(model.components_[0])
+# print('-----')
+# print(model.components_[1])
+
+new = model.transform(sc_df)
+new_df = pd.DataFrame(new)
+print(new_df.head())
