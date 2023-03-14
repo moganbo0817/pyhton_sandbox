@@ -1,28 +1,31 @@
+# %%
 import pandas as pd
 from pathlib import Path
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.covariance import MinCovDet
-
+# %%
 parent = Path(__file__).resolve().parent
 df = pd.read_csv(parent.joinpath('data/bike.tsv'), sep='\t')
-#print(df.head(2))
+print(df.head(2))
+# %%
 
-weather = pd.read_csv(parent.joinpath('data/weather.csv'), encoding='shift-jis')
-#print(weather)
+weather = pd.read_csv(parent.joinpath(
+    'data/weather.csv'), encoding='shift-jis')
+# print(weather)
 
 temp = pd.read_json(parent.joinpath('data/temp.json'))
-#print(temp.T)
+# print(temp.T)
 
-df2 = df.merge(weather,how='inner', on='weather_id')
-#print(df2)
-#print(df2.groupby('weather').mean()['cnt'])
+df2 = df.merge(weather, how='inner', on='weather_id')
+# print(df2)
+# print(df2.groupby('weather').mean()['cnt'])
 
-#print(temp.T.loc[199:201])
-#print(df2[df2['dteday']=='2011-07-20'])
+# print(temp.T.loc[199:201])
+# print(df2[df2['dteday']=='2011-07-20'])
 
-df2 = df2.merge(temp.T,how='left',on='dteday')
-#print(df2)
+df2 = df2.merge(temp.T, how='left', on='dteday')
+# print(df2)
 
 # df2[['temp','hum']].plot(kind='line')
 # plt.savefig(parent.joinpath('models/bike_temp.png'))
@@ -30,14 +33,14 @@ df2 = df2.merge(temp.T,how='left',on='dteday')
 # df2['hum'].plot(kind='hist',alpha=0.5)
 # plt.savefig(parent.joinpath('models/bike_hist.png'))
 
-#df2['atemp'].loc[220:240].plot(kind='line')
-#plt.savefig(parent.joinpath('models/bike_atemp.png'))
+# df2['atemp'].loc[220:240].plot(kind='line')
+# plt.savefig(parent.joinpath('models/bike_atemp.png'))
 
 df2['atemp'] = df2['atemp'].astype(float)
 df2['atemp'] = df2['atemp'].interpolate()
 
 df2['atemp'].loc[220:240].plot(kind='line')
-#plt.savefig(parent.joinpath('models/bike_atemp.png'))
+# plt.savefig(parent.joinpath('models/bike_atemp.png'))
 
 # iris_df = pd.read_csv(parent.joinpath('data/iris.csv'))
 # non_df = iris_df.dropna()
@@ -53,24 +56,26 @@ df2['atemp'].loc[220:240].plot(kind='line')
 # pred = model.predict(x)
 
 # iris_df.loc[condition,'がく片長さ'] = pred
-#print(df2)
-df4 = df2.loc[:,'atemp':'windspeed']
-#print(df4)
+# print(df2)
+df4 = df2.loc[:, 'atemp':'windspeed']
+# print(df4)
 df4 = df4.dropna()
-mcd = MinCovDet(random_state=0,support_fraction=0.7)
+mcd = MinCovDet(random_state=0, support_fraction=0.7)
 mcd.fit(df4)
 distance = mcd.mahalanobis(df4)
-#print(distance)
+# print(distance)
 
 distance = pd.Series(distance)
 distance.plot(kind='box')
-#plt.savefig(parent.joinpath('models/bike_hige.png'))
+# plt.savefig(parent.joinpath('models/bike_hige.png'))
 tmp = distance.describe()
-#print(tmp)
+# print(tmp)
 
 iqr = tmp['75%'] - tmp['25%']
 jougen = 1.5 * (iqr) + tmp['75%']
 kagen = tmp['25%'] - 1.5*(iqr)
 
-outliner = distance[(distance>jougen) | (distance <kagen)]
+outliner = distance[(distance > jougen) | (distance < kagen)]
 print(outliner)
+
+# %%
