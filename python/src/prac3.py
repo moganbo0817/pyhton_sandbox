@@ -13,7 +13,7 @@ def greeting(i):
     elif i == 'さようなら':
         s = 'お元気で！'
     else:
-        s = 'どうしました？'
+        s = 'どうしました？？？'
     return s
 
 
